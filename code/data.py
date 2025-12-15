@@ -10,7 +10,7 @@ for action in actions:
 #initialize mediapipe to detect hands
 with mp_hands.Hands(
     model_complexity=0, #chooses less complex model for faster detection
-    min_detection_confidence=0.3, #minimum confidence value to detect hand
+    min_detection_confidence=0.3, #minimum confidence value to detect hand/threshold
     min_tracking_confidence=0.3 #minimum confidence value to track hand
 ) as hands:
     
@@ -31,5 +31,16 @@ with mp_hands.Hands(
             else:
                 print(f'No hand detected for action {action}, sequence {sequence}, frame {frame_num}')
 
+            draw_styles_landmarks(image, results) #draw hand landmarks on image
+
+            #display collection status
+            message=(f'Collecting data for action {action}, sequence {sequence}, frame {frame_num}')
+            cv2.putText(image, message, (15,12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255),1,cv2.LINE_AA) #put text on image
+            cv2.imshow('OpenCV Feed', image) #show image with landmarks
+
+            #extract and save keypoints
+            keypoints=extract_keypoints(results)
+            npy_path=os.path.join(DATA_PATH, action, str(sequence), str(frame_num))
+            np.save(npy_path, keypoints)
 
             
