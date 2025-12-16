@@ -17,7 +17,14 @@ for action in actions:
     for sequence in range(no_sequences):
         window=[]
         for frame_num in range(sequence_length):
-            res=np.load(os.path.join(DATA_PATH, action, str(sequence), f'{frame_num}.npy'))
-            window.append(res)
-        sequences.append(window)
-        labels.append(label_map[action])
+            npy.path=os.path.join(DATA_PATH, action, str(sequence), f'{frame_num}.npy') #path to each keypoint file
+
+            if os.path.exists(npy_path):
+                res=np.load(npy_path,allow_pickle=True) #load keypoints
+                window.append(res)
+            else:
+                window.append(np.zeros(63)) #append zeros if file not found
+
+
+        sequences.append(window) #append sequence of keypoints
+        labels.append(label_map[action]) #append corresponding label
