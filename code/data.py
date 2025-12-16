@@ -43,4 +43,10 @@ with mp_hands.Hands(
             npy_path=os.path.join(DATA_PATH, action, str(sequence), str(frame_num))
             np.save(npy_path, keypoints)
 
+
+            if cv2.waitKey(10) & 0xFF==ord('q'): #press q to quit
+                break
+
+cv2.destroyAllWindows() #close all cv2 windows
+
             
