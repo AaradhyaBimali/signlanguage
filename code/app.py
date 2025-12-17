@@ -28,3 +28,22 @@ def prob_viz(res, actions, input_frame, colors):
 
     return output_frame
 
+#detection and display of variable
+sequence=[]
+sentence=[]
+predictions=[]
+threshold=0.8
+
+cap=cv2.VideoCapture(0)
+
+
+#initialize mediapipe for hand tracking
+with mp_hands.Hands(
+    model_complexity=0,
+    min_detection_confidence=0.5,
+    min_tracking_confidence=0.5) as hands:
+
+
+#loop through every frame
+while cap.isOpened():
+    
