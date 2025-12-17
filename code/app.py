@@ -46,4 +46,50 @@ with mp_hands.Hands(
 
 #loop through every frame
 while cap.isOpened():
-    
+    ret, frame=cap.read()
+
+    #process the frame and the region
+    cropframe=frame[40:400,0:300]
+    frame=cv2.rectangle(frame,(0,40),(300,400),(255,0,0),2)
+    image,results=mediapipe_detection(cropframe,hands)
+
+    keypoints=extract_keypoints(results) #extract keypoints using the function
+    sequence.append(keypoints) #append keypoints to sequence
+    sequence=sequence[-30:] #keep only last 30 frames
+
+    try: 
+        if len(sequence)==30:
+            res=model.predict(np.expand_dims(sequence, axis=0))[0]#predict on the sequence
+        
+            predictions.append(np.argmax(res))
+
+            #check if prediction is consistent
+            if np.unique(predictions[-10:])[0]==np.argmax(res):
+                if res[np.argmax(res)]>threshold:
+
+                    if len(sentence)>0:
+                        if actions[np.argmax(res)]!=sentence[-1]: #checks and updates once frame changes
+                            sentence.append(actions[np.argmax(res)])
+                            accuracy.append(str(res[np.argmax(res)]*100))
+                    else:
+                        sentence.append(actions[np.argmax(res)])
+                        accuracy.append(str(res[np.argmax(res)]*100)) 
+
+            if len(sentence)>1:
+                sentence=sentence[-1:]
+                accuracy=accuracy[-1:]
+
+
+    except Exception as e:
+        pass
+
+    cv2.rectangle(frame,(0,0),(300,40),(245,117,16),-1) #displaying frames
+    cv2.putText(frame,'Output:'+' ',join(sentence)+'',(3,30),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255),2,cv2.LINE_AA)
+
+    cv2.imshow('OpenCV Feed', frame)
+
+    if cv2.waitKey(10) & 0xFF==ord('q'):
+        break
+
+    cap.release()
+cv2.destroyAllWindows()
