@@ -17,7 +17,7 @@ with mp_hands.Hands(
     for action in actions:
         for sequence in range(no_sequences):
             for frame_num in range(sequence_length):
-                frame=cv2.imread(f'image/{action}/{sequence}.pmg') #read image from collected data
+                frame=cv2.imread(f'image/{action}/{sequence}.png') #read image from collected data
             
             if frame is None:
                 print("Image not found")
