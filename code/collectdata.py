@@ -2,19 +2,27 @@ import cv2
 import os
 
 #vid capture
-cap=cv2.videoCapture(0) #0 for default camera
+cap=cv2.VideoCapture(0) #0 for default camera
 
+if not cap.isOpened():
+    print("Error: Could not open camera.")
+    exit()
 
 directory='image/' #directory to save images
+
+# Create directories if they don't exist
+os.makedirs('image/A', exist_ok=True)
+os.makedirs('image/B', exist_ok=True)
+os.makedirs('image/C', exist_ok=True)
 
 while True:
     _,frame=cap.read() #read frame from vid capture
 
     #directory to count number of images in folder
     count={
-        'a':len(os.listdir(directory+'A')),
-        'b':len(os.listdir(directory+'B')),
-        'c':len(os.listdir(directory+'C'))
+        'a':len([f for f in os.listdir(directory+'A') if f.endswith('.png')]),
+        'b':len([f for f in os.listdir(directory+'B') if f.endswith('.png')]),
+        'c':len([f for f in os.listdir(directory+'C') if f.endswith('.png')])
     }
 
 
@@ -34,16 +42,18 @@ while True:
     frame=frame[40:400,0:300]
 
 
-    interrupt=cvt.waitKey(10) #wait for key press for 10ms
+    interrupt=cv2.waitKey(10) #wait for key press for 10ms
     if interrupt & 0xFF==ord('a'): #if a is pressed exit loop
-        cv2.imwrite(directory+'A/'+str(count['a'])+'.jpg',frame)
+        cv2.imwrite(directory+'A/'+str(count['a'])+'.png',frame)
         print('A captured')
     if interrupt & 0xFF==ord('b'): #if b is pressed exit loop
-        cv2.imwrite(directory+'B/'+str(count['b'])+'.jpg',frame)
+        cv2.imwrite(directory+'B/'+str(count['b'])+'.png',frame)
         print('B captured')
     if interrupt & 0xFF==ord('c'): #if c is pressed exit loop
-        cv2.imwrite(directory+'C/'+str(count['c'])+'.jpg',frame)
+        cv2.imwrite(directory+'C/'+str(count['c'])+'.png',frame)
         print('C captured')
+    if interrupt & 0xFF==ord('q'): #if q is pressed exit loop
+        break
 
 #release the vid capture device
 cap.release()
