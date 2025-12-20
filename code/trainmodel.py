@@ -1,9 +1,9 @@
 from function import *
 from sklearn.model_selection import train_test_split
-from keras.utils import to_categorical
-from keras.models import Sequential
-from keras.layers import LSTM, Dense
-from keras.callbacks import TensorBoard
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, Dense
+from tensorflow.keras.callbacks import TensorBoard
 
 import numpy as np
 import os
@@ -17,7 +17,7 @@ for action in actions:
     for sequence in range(no_sequences):
         window=[]
         for frame_num in range(sequence_length):
-            npy.path=os.path.join(DATA_PATH, action, str(sequence), f'{frame_num}.npy') #path to each keypoint file
+            npy_path = os.path.join(DATA_PATH, action, str(sequence), f'{frame_num}.npy') #path to each keypoint file
 
             if os.path.exists(npy_path):
                 res=np.load(npy_path,allow_pickle=True) #load keypoints
@@ -48,7 +48,7 @@ model=Sequential([
     LSTM(64, return_sequences=False, activation='relu'),
     Dense(64, activation='relu'),
     Dense(32, activation='relu'),
-    Dense(actions.shape[0], activation='softmax')
+    Dense(len(actions), activation='softmax')
 ])
 
 #compile the model
