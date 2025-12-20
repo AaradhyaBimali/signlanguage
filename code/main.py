@@ -1,4 +1,3 @@
-#This is copy of functions.py
 import numpy as np
 import cv2
 import mediapipe as mp
@@ -14,7 +13,7 @@ def mediapipe_detection (image,model):
     image.flags.writeable = False #disables writing access to image
     results = model.process(image) #model processes the image
     image.flags.writeable = True #enables writing access to image
-    image= cv2.cvtColor(image,cv2,COLOR_RGB2BGR) #converts color to orginal form
+    image= cv2.cvtColor(image, cv2.COLOR_RGB2BGR) #converts color to orginal form
     return image, results
 
 #draw the landmarks and hand connections
